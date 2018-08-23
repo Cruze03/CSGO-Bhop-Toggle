@@ -9,13 +9,14 @@ ConVar autobunnyhopping;
 ConVar enableautobunnyhopping; 
 ConVar staminajumpcost;
 ConVar staminalandcost;
+ConVar solidteammates;
 
 public Plugin:myinfo =
 {
 	name = "Bhop Toggle",
 	author = "Cruze",
 	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
-	version = "1.3",
+	version = "1.2.5",
 	url = ""
 }
 public void OnPluginStart() 
@@ -31,6 +32,7 @@ public void OnPluginStart()
 	enableautobunnyhopping = FindConVar("sv_enablebunnyhopping");
 	staminajumpcost = FindConVar("sv_staminajumpcost");
 	staminalandcost = FindConVar("sv_staminalandcost");
+	solidteammates = FindConVar("mp_solid_teammates");
 	
 }
 public void OnMapStart() 
@@ -51,6 +53,7 @@ public Action Trigger_AutoBhop(int client, int args)
 				SetConVarInt(airaccelerate, 150);
 				SetConVarInt(autobunnyhopping, 1);
 				SetConVarInt(enableautobunnyhopping, 1);
+				SetConVarInt(solidteammates, 0);
 				SetConVarFloat(staminajumpcost, 0);
 				SetConVarFloat(staminalandcost, 0);
 				trigger=true;
@@ -59,7 +62,7 @@ public Action Trigger_AutoBhop(int client, int args)
 				ShowHudText(client, -1, "AUTO-BHOP is turned ON");
 				for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 				{
-					SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  // 2 - none / 5 - 'default'
+					SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 				}
 			}
 			else // Bhop Off
@@ -67,6 +70,7 @@ public Action Trigger_AutoBhop(int client, int args)
 				SetConVarInt(airaccelerate, 12);
 				SetConVarInt(autobunnyhopping, 0);
 				SetConVarInt(enableautobunnyhopping, 0);
+				SetConVarInt(solidteammates, 1);
 				SetConVarFloat(staminajumpcost, 0.080);
 				SetConVarFloat(staminalandcost, 0.050);
 				trigger=false;
@@ -75,7 +79,7 @@ public Action Trigger_AutoBhop(int client, int args)
 				ShowHudText(client, -1, "AUTO-BHOP is turned OFF");
 				for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 				{
-					SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  // 2 - none / 5 - 'default'
+					SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 				}
 			}
 		}
@@ -88,6 +92,7 @@ public Action AutoBhopOn(int client, int args)
 		SetConVarInt(airaccelerate, 150);
 		SetConVarInt(autobunnyhopping, 1);
 		SetConVarInt(enableautobunnyhopping, 1);
+		SetConVarInt(solidteammates, 0);
 		SetConVarFloat(staminajumpcost, 0);
 		SetConVarFloat(staminalandcost, 0);
 		trigger=true;
@@ -96,7 +101,7 @@ public Action AutoBhopOn(int client, int args)
 		ShowHudText(client, -1, "AUTO-BHOP is turned ON");
 		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 		{
-			SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  // 2 - none / 5 - 'default'
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 		}
 	}
 	return Plugin_Handled;
@@ -108,6 +113,7 @@ public Action AutoBhopOff(int client, int args)
 		SetConVarInt(airaccelerate, 12);
 		SetConVarInt(autobunnyhopping, 0);
 		SetConVarInt(enableautobunnyhopping, 0);
+		SetConVarInt(solidteammates, 1);
 		SetConVarFloat(staminajumpcost, 0.080);
 		SetConVarFloat(staminalandcost, 0.050);
 		trigger=false;
@@ -116,7 +122,7 @@ public Action AutoBhopOff(int client, int args)
 		ShowHudText(client, -1, "AUTO-BHOP is turned OFF");
 		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 		{
-			SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  // 2 - none / 5 - 'default'
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 		}
 	}
 	return Plugin_Handled;
