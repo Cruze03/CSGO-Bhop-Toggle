@@ -14,8 +14,8 @@ public Plugin:myinfo =
 {
 	name = "Bhop Toggle",
 	author = "Cruze",
-	description = "!ab,!abhop,!autobhop",
-	version = "1.1",
+	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
+	version = "1.2",
 	url = ""
 }
 public void OnPluginStart() 
@@ -23,6 +23,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_autobhop", Trigger_AutoBhop, ADMFLAG_RCON);
 	RegAdminCmd("sm_abhop", Trigger_AutoBhop, ADMFLAG_RCON);
 	RegAdminCmd("sm_ab", Trigger_AutoBhop, ADMFLAG_RCON);
+	RegAdminCmd("sm_bhopon", AutoBhopOn, ADMFLAG_RCON);
+	RegAdminCmd("sm_bhopoff", AutoBhopOff, ADMFLAG_RCON);
 
 	airaccelerate = FindConVar("sv_airaccelerate");
 	autobunnyhopping = FindConVar("sv_autobunnyhopping");
@@ -34,9 +36,14 @@ public void OnMapStart()
 {
 	trigger=false;
 }
+public void OnRoundStart() 
+{
+	trigger=false;
+}
+
 public Action Trigger_AutoBhop(int client, int args)
 {
-		if(IsClientInGame(client) && !IsFakeClient(client))
+		if (IsValidClient(client))
 		{
 			if(!trigger) // Bhop On
 			{ 
@@ -64,4 +71,44 @@ public Action Trigger_AutoBhop(int client, int args)
 			}
 		}
 	return Plugin_Handled;
+}
+public Action AutoBhopOn(int client, int args)
+{
+	if (IsValidClient(client))
+	{
+		SetConVarInt(airaccelerate, 150);
+		SetConVarInt(autobunnyhopping, 1);
+		SetConVarInt(enableautobunnyhopping, 1);
+		SetConVarFloat(staminajumpcost, 0);
+		SetConVarFloat(staminalandcost, 0);
+		trigger=true;
+		CPrintToChatAll("%s {lime}Auto-BHOP has been turned {green}ON{default}", SERVER_TAG);
+		SetHudTextParams(0.45, 0.350,  6.0, 0, 255, 0, 255, 0, 0.25, 0.5, 0.3);
+		ShowHudText(client, -1, "AUTO-BHOP is turned ON");
+	}
+	return Plugin_Handled;
+}
+public Action AutoBhopOff(int client, int args)
+{
+	if (IsValidClient(client))
+	{
+		SetConVarInt(airaccelerate, 12);
+		SetConVarInt(autobunnyhopping, 0);
+		SetConVarInt(enableautobunnyhopping, 0);
+		SetConVarFloat(staminajumpcost, 0.080);
+		SetConVarFloat(staminalandcost, 0.050);
+		trigger=false;
+		CPrintToChatAll("%s {lightred}Auto-BHOP has been turned {darkred}OFF", SERVER_TAG);
+		SetHudTextParams(0.45, 0.350, 6.0, 255, 0, 0, 255, 0, 0.25, 0.5, 0.3);
+		ShowHudText(client, -1, "AUTO-BHOP is turned OFF");
+	}
+	return Plugin_Handled;
+}
+bool IsValidClient(int client, bool bAllowBots = false, bool bAllowDead = true)
+{
+    if(!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !bAllowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!bAllowDead && !IsPlayerAlive(client)))
+    {
+        return false;
+    }
+    return true;
 }
