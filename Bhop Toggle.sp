@@ -13,10 +13,10 @@ ConVar solidteammates;
 
 public Plugin:myinfo =
 {
-	name = "Bhop Toggle",
+	name = "Bhop Round",
 	author = "Cruze",
 	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
-	version = "1.2.5",
+	version = "1.3",
 	url = ""
 }
 public void OnPluginStart() 
@@ -26,6 +26,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_ab", Trigger_AutoBhop, ADMFLAG_RCON);
 	RegAdminCmd("sm_bhopon", AutoBhopOn, ADMFLAG_RCON);
 	RegAdminCmd("sm_bhopoff", AutoBhopOff, ADMFLAG_RCON);
+	
+	HookEvent("round_start",OnBhop_RoundStart);
 
 	airaccelerate = FindConVar("sv_airaccelerate");
 	autobunnyhopping = FindConVar("sv_autobunnyhopping");
@@ -39,9 +41,24 @@ public void OnMapStart()
 {
 	trigger=false;
 }
-public void OnRoundStart() 
+public OnBhop_RoundStart(Handle: event , const String: name[] , bool: dontBroadcast)
 {
-	trigger=false;
+	if(GetConVarInt(airaccelerate) != 12)
+	{
+		SetConVarInt(airaccelerate, 12);
+		SetConVarInt(autobunnyhopping, 0);
+		SetConVarInt(enableautobunnyhopping, 0);
+		SetConVarInt(solidteammates, 1);
+		SetConVarFloat(staminajumpcost, 0.080);
+		SetConVarFloat(staminalandcost, 0.050);
+		trigger=false;
+		PrintToAdmins("[{lightyellow}AB{default}] {lightred}Auto-BHOP has been turned {darkred}OFF", "m"); //Prints to admin who have "m" (RCON power) flag
+		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
+		{
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
+		}
+	}
+	return Plugin_Continue;
 }
 
 public Action Trigger_AutoBhop(int client, int args)
@@ -135,4 +152,27 @@ bool IsValidClient(int client, bool bAllowBots = true, bool bAllowDead = true)
         return false;
     }
     return true;
+}
+stock PrintToAdmins(const String:message[], const String:flags[]) 
+{ 
+    for (new x = 1; x <= MaxClients; x++) 
+    { 
+        if (IsValidClient(x) && IsValidAdmin(x, flags)) 
+        { 
+            CPrintToChat(x, message);
+        } 
+    } 
+}
+stock bool:IsValidAdmin(client, const String:flags[]) 
+{ 
+    new ibFlags = ReadFlagString(flags); 
+    if ((GetUserFlagBits(client) & ibFlags) == ibFlags) 
+    { 
+        return true; 
+    } 
+    if (GetUserFlagBits(client) & ADMFLAG_ROOT) 
+    { 
+        return true; 
+    } 
+    return false; 
 }
