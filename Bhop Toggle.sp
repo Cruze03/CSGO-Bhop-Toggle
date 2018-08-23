@@ -2,7 +2,7 @@
 #include <zipcore_csgocolors> 
 
 #define SERVER_TAG "[{lightyellow}AB{default}]"
-bool trigger; 
+bool trigger = false;
 
 ConVar airaccelerate;
 ConVar autobunnyhopping; 
@@ -15,7 +15,7 @@ public Plugin:myinfo =
 	name = "Bhop Toggle",
 	author = "Cruze",
 	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
-	version = "1.2",
+	version = "1.3",
 	url = ""
 }
 public void OnPluginStart() 
@@ -31,6 +31,7 @@ public void OnPluginStart()
 	enableautobunnyhopping = FindConVar("sv_enablebunnyhopping");
 	staminajumpcost = FindConVar("sv_staminajumpcost");
 	staminalandcost = FindConVar("sv_staminalandcost");
+	
 }
 public void OnMapStart() 
 {
@@ -46,7 +47,7 @@ public Action Trigger_AutoBhop(int client, int args)
 		if (IsValidClient(client))
 		{
 			if(!trigger) // Bhop On
-			{ 
+			{
 				SetConVarInt(airaccelerate, 150);
 				SetConVarInt(autobunnyhopping, 1);
 				SetConVarInt(enableautobunnyhopping, 1);
@@ -56,9 +57,13 @@ public Action Trigger_AutoBhop(int client, int args)
 				CPrintToChatAll("%s {lime}Auto-BHOP has been turned {green}ON{default}", SERVER_TAG);
 				SetHudTextParams(0.45, 0.350,  6.0, 0, 255, 0, 255, 0, 0.25, 0.5, 0.3);
 				ShowHudText(client, -1, "AUTO-BHOP is turned ON");
+				for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
+				{
+					SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  // 2 - none / 5 - 'default'
+				}
 			}
 			else // Bhop Off
-			{ 
+			{
 				SetConVarInt(airaccelerate, 12);
 				SetConVarInt(autobunnyhopping, 0);
 				SetConVarInt(enableautobunnyhopping, 0);
@@ -68,6 +73,10 @@ public Action Trigger_AutoBhop(int client, int args)
 				CPrintToChatAll("%s {lightred}Auto-BHOP has been turned {darkred}OFF", SERVER_TAG);
 				SetHudTextParams(0.45, 0.350, 6.0, 255, 0, 0, 255, 0, 0.25, 0.5, 0.3);
 				ShowHudText(client, -1, "AUTO-BHOP is turned OFF");
+				for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
+				{
+					SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  // 2 - none / 5 - 'default'
+				}
 			}
 		}
 	return Plugin_Handled;
@@ -85,6 +94,10 @@ public Action AutoBhopOn(int client, int args)
 		CPrintToChatAll("%s {lime}Auto-BHOP has been turned {green}ON{default}", SERVER_TAG);
 		SetHudTextParams(0.45, 0.350,  6.0, 0, 255, 0, 255, 0, 0.25, 0.5, 0.3);
 		ShowHudText(client, -1, "AUTO-BHOP is turned ON");
+		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
+		{
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  // 2 - none / 5 - 'default'
+		}
 	}
 	return Plugin_Handled;
 }
@@ -101,10 +114,15 @@ public Action AutoBhopOff(int client, int args)
 		CPrintToChatAll("%s {lightred}Auto-BHOP has been turned {darkred}OFF", SERVER_TAG);
 		SetHudTextParams(0.45, 0.350, 6.0, 255, 0, 0, 255, 0, 0.25, 0.5, 0.3);
 		ShowHudText(client, -1, "AUTO-BHOP is turned OFF");
+		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
+		{
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  // 2 - none / 5 - 'default'
+		}
 	}
 	return Plugin_Handled;
 }
-bool IsValidClient(int client, bool bAllowBots = false, bool bAllowDead = true)
+	
+bool IsValidClient(int client, bool bAllowBots = true, bool bAllowDead = true)
 {
     if(!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !bAllowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!bAllowDead && !IsPlayerAlive(client)))
     {
