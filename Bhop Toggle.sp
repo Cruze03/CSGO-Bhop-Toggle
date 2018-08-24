@@ -3,6 +3,10 @@
 
 #define SERVER_TAG "[{lightyellow}AB{default}]"
 bool trigger = false;
+/*
+ *TODO: 
+ *1) Fix warnings caused by "Tag Mismatch" (Syntax Problem) (Help Appreciated)
+ */
 
 ConVar airaccelerate;
 ConVar autobunnyhopping; 
@@ -43,9 +47,11 @@ public void OnMapStart()
 }
 public OnBhop_RoundStart(Handle: event , const String: name[] , bool: dontBroadcast)
 {
-	if(GetConVarInt(airaccelerate) != 12)
+	if(GetConVarInt(autobunnyhopping) != 0)
 	{
-		PrintToAdmins("{lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", "m");
+		PrintToAdmins("*********************{purple}Message To Admins{default}*******************", "m");
+		PrintToAdmins("[SM] {lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", "m");
+		PrintToAdmins("***********************************************************", "m");
 		SetConVarInt(solidteammates, 0); //turning off collision again because it was getting enable OnRoundStart for some reason
 		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 		{
