@@ -13,10 +13,10 @@ ConVar solidteammates;
 
 public Plugin:myinfo =
 {
-	name = "Bhop Round",
+	name = "Bhop Toggle",
 	author = "Cruze",
 	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
-	version = "1.3",
+	version = "1.4",
 	url = ""
 }
 public void OnPluginStart() 
@@ -45,17 +45,11 @@ public OnBhop_RoundStart(Handle: event , const String: name[] , bool: dontBroadc
 {
 	if(GetConVarInt(airaccelerate) != 12)
 	{
-		SetConVarInt(airaccelerate, 12);
-		SetConVarInt(autobunnyhopping, 0);
-		SetConVarInt(enableautobunnyhopping, 0);
-		SetConVarInt(solidteammates, 1);
-		SetConVarFloat(staminajumpcost, 0.080);
-		SetConVarFloat(staminalandcost, 0.050);
-		trigger=false;
-		PrintToAdmins("[{lightyellow}AB{default}] {lightred}Auto-BHOP has been turned {darkred}OFF", "m"); //Prints to admin who have "m" (RCON power) flag
+		PrintToAdmins("{lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", "m");
+		SetConVarInt(solidteammates, 0); //turning off collision again because it was getting enable OnRoundStart for some reason
 		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
 		{
-			SetEntProp(i, Prop_Send, "m_CollisionGroup", 5);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
+			SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 		}
 	}
 	return Plugin_Continue;
