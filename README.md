@@ -4,3 +4,5 @@ Admin Command [m flag]: sm_ab(toggle), sm_abhop(toggle), sm_autobhop(toggle), sm
 ![](abon.jpg)
 
 ![](aboff.jpg)
+
+![](messagetoadmin.jpg)
