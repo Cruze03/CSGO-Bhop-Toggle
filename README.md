@@ -5,5 +5,5 @@ Admin Command [m flag]: sm_ab(toggle), sm_abhop(toggle), sm_autobhop(toggle), sm
 
 ![](aboff.jpg)
 
-## OnRoundStart
+## OnRoundStart (when bhop is on)
 ![](messagetoadmin.jpg)
