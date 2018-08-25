@@ -1,12 +1,15 @@
+/*
+ * FIXED ALL COMPILER WARNING ^__^
+ */
 #include <sourcemod> 
 #include <zipcore_csgocolors> 
 
+#pragma semicolon 1
+
 #define SERVER_TAG "[{lightyellow}AB{default}]"
+
 bool trigger = false;
-/*
- *TODO: 
- *1) Fix warnings caused by "Tag Mismatch" (Syntax Problem) (Help Appreciated)
- */
+
 
 ConVar airaccelerate;
 ConVar autobunnyhopping; 
@@ -15,12 +18,12 @@ ConVar staminajumpcost;
 ConVar staminalandcost;
 ConVar solidteammates;
 
-public Plugin:myinfo =
+public Plugin myinfo =
 {
 	name = "Bhop Toggle",
 	author = "Cruze",
 	description = "!ab,!abhop,!autobhop,!bhopon,!bhopoff",
-	version = "1.4",
+	version = "1.5",
 	url = ""
 }
 public void OnPluginStart() 
@@ -45,9 +48,9 @@ public void OnMapStart()
 {
 	trigger=false;
 }
-public OnBhop_RoundStart(Handle: event , const String: name[] , bool: dontBroadcast)
+public void OnBhop_RoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
-	if(GetConVarInt(autobunnyhopping) != 0)
+	if(GetConVarInt(autobunnyhopping) == 1)
 	{
 		PrintToAdmins("*********************{purple}Message To Admins{default}*******************", "m");
 		PrintToAdmins("[SM] {lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", "m");
@@ -58,10 +61,10 @@ public OnBhop_RoundStart(Handle: event , const String: name[] , bool: dontBroadc
 			SetEntProp(i, Prop_Send, "m_CollisionGroup", 2);  //[ENEMY COLLISION] 2 - none / 5 - 'default'
 		}
 	}
-	return Plugin_Continue;
+	//
 }
 
-public Action Trigger_AutoBhop(int client, int args)
+public Action Trigger_AutoBhop(client, args)
 {
 		if (IsValidClient(client))
 		{
@@ -71,8 +74,8 @@ public Action Trigger_AutoBhop(int client, int args)
 				SetConVarInt(autobunnyhopping, 1);
 				SetConVarInt(enableautobunnyhopping, 1);
 				SetConVarInt(solidteammates, 0);
-				SetConVarFloat(staminajumpcost, 0);
-				SetConVarFloat(staminalandcost, 0);
+				SetConVarFloat(staminajumpcost, 0.0);
+				SetConVarFloat(staminalandcost, 0.0);
 				trigger=true;
 				CPrintToChatAll("%s {lime}Auto-BHOP has been turned {green}ON{default}", SERVER_TAG);
 				SetHudTextParams(0.45, 0.350,  6.0, 0, 255, 0, 255, 0, 0.25, 0.5, 0.3);
@@ -100,9 +103,9 @@ public Action Trigger_AutoBhop(int client, int args)
 				}
 			}
 		}
-	return Plugin_Handled;
+		return Plugin_Handled;
 }
-public Action AutoBhopOn(int client, int args)
+public Action AutoBhopOn(client, args)
 {
 	if (IsValidClient(client))
 	{
@@ -110,8 +113,8 @@ public Action AutoBhopOn(int client, int args)
 		SetConVarInt(autobunnyhopping, 1);
 		SetConVarInt(enableautobunnyhopping, 1);
 		SetConVarInt(solidteammates, 0);
-		SetConVarFloat(staminajumpcost, 0);
-		SetConVarFloat(staminalandcost, 0);
+		SetConVarFloat(staminajumpcost, 0.0);
+		SetConVarFloat(staminalandcost, 0.0);
 		trigger=true;
 		CPrintToChatAll("%s {lime}Auto-BHOP has been turned {green}ON{default}", SERVER_TAG);
 		SetHudTextParams(0.45, 0.350,  6.0, 0, 255, 0, 255, 0, 0.25, 0.5, 0.3);
@@ -123,7 +126,7 @@ public Action AutoBhopOn(int client, int args)
 	}
 	return Plugin_Handled;
 }
-public Action AutoBhopOff(int client, int args)
+public Action AutoBhopOff(client, args)
 {
 	if (IsValidClient(client))
 	{
@@ -145,7 +148,7 @@ public Action AutoBhopOff(int client, int args)
 	return Plugin_Handled;
 }
 	
-bool IsValidClient(int client, bool bAllowBots = true, bool bAllowDead = true)
+bool IsValidClient(client, bool bAllowBots = true, bool bAllowDead = true)
 {
     if(!(1 <= client <= MaxClients) || !IsClientInGame(client) || (IsFakeClient(client) && !bAllowBots) || IsClientSourceTV(client) || IsClientReplay(client) || (!bAllowDead && !IsPlayerAlive(client)))
     {
@@ -153,7 +156,7 @@ bool IsValidClient(int client, bool bAllowBots = true, bool bAllowDead = true)
     }
     return true;
 }
-stock PrintToAdmins(const String:message[], const String:flags[]) 
+stock PrintToAdmins(const char[] message, const char[] flags) 
 { 
     for (new x = 1; x <= MaxClients; x++) 
     { 
@@ -163,7 +166,7 @@ stock PrintToAdmins(const String:message[], const String:flags[])
         } 
     } 
 }
-stock bool:IsValidAdmin(client, const String:flags[]) 
+bool IsValidAdmin(client, const char[] flags) 
 { 
     new ibFlags = ReadFlagString(flags); 
     if ((GetUserFlagBits(client) & ibFlags) == ibFlags) 
