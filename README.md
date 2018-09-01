@@ -4,7 +4,7 @@ Admin Command [m flag]: sm_ab(toggle), sm_abhop(toggle), sm_autobhop(toggle), sm
 ![](abon.jpg)
 ![](aboff.jpg)
 ![](speedmeter.jpg)
-![]speedmeter2.jpg)
+![](speedmeter2.jpg)
 
 ## OnRoundStart (when bhop is on)
 ![](messagetoadmin.jpg)
