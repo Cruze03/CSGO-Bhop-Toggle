@@ -25,8 +25,8 @@ public Plugin myinfo =
 }
 public void OnPluginStart() 
 {
-	RegAdminCmd("sm_autobhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Auto-Bhop");
-	RegAdminCmd("sm_abhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Auto-Bhop");
+	RegAdminCmd("sm_autobhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
+	RegAdminCmd("sm_abhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
 	RegAdminCmd("sm_ab", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
 	RegAdminCmd("sm_bhopon", AutoBhopOn, ADMFLAG_RCON, "Turn Bhop On");
 	RegAdminCmd("sm_bhopoff", AutoBhopOff, ADMFLAG_RCON, "Turn Bhop Off");
@@ -188,8 +188,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 	// If AutoBhop is enabled, player velocity(speed) will be shown. Thanks SHUFEN.jp(https://forums.alliedmods.net/member.php?u=250145) for helping me out!! ^___^
 
-	if (!IsClientInGame(client))
-		return;
 	if(GetConVarInt(autobunnyhopping) == 1  && IsValidClient(client)) 
 	{	
 		if(IsPlayerAlive(client))
