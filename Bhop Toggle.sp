@@ -51,8 +51,10 @@ public void OnBhop_RoundStart(Handle event, const char[] name, bool dontBroadcas
 {
 	if(GetConVarInt(autobunnyhopping) == 1)
 	{
+		char message[512];
+		Format(message, sizeof(message), "%s {lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", SERVER_TAG);
 		PrintToAdmins("*********************{purple}Message To Admins{default}*******************", "m");
-		PrintToAdmins("[SM] {lime}Auto-BHOP is still {green}ON{lime}. Type {green}!ab {lime}or {green}!bhopoff{lime} to turn it off!{default}", "m");
+		PrintToAdmins(message, "m");
 		PrintToAdmins("***********************************************************", "m");
 		SetConVarInt(solidteammates, 0); //turning off collision again because it was getting enable OnRoundStart for some reason
 		for (int i = 1; i <= MaxClients; i++) if (IsValidClient(i, true, true))
@@ -196,7 +198,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVel);
 			float fVelocity = SquareRoot(Pow(vVel[0], 2.0) + Pow(vVel[1], 2.0));
 			SetHudTextParamsEx(-1.0, 0.65, 0.1, {255, 255, 255, 255}, {0, 0, 0, 255}, 0, 0.0, 0.0, 0.0);
-			ShowHudText(client, 3, "Speed: %.2f", fVelocity);
+			ShowHudText(client, 3, "Speed: %.2f u/s", fVelocity);
 		}
 		if(IsClientObserver(client))
 		{
@@ -212,7 +214,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 			char ClientName[32];
 			GetClientName(spectarget, ClientName, 32);
-			ShowHudText(client, 3, "%s's Speed: %.2f", ClientName, fVelocity);
+			ShowHudText(client, 3, "%s's Speed: %.2f u/s", ClientName, fVelocity);
 		}
 		return;
 	}
