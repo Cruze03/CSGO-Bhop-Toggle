@@ -1,3 +1,6 @@
+/* TODO:-
+ * 1) Add Cvar to enable/disable speemeter
+ */
 #include <sourcemod> 
 #include <zipcore_csgocolors> 
 
@@ -25,8 +28,8 @@ public Plugin myinfo =
 }
 public void OnPluginStart() 
 {
-	RegAdminCmd("sm_autobhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
-	RegAdminCmd("sm_abhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
+	RegAdminCmd("sm_autobhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop");
+	RegAdminCmd("sm_abhop", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop");
 	RegAdminCmd("sm_ab", Trigger_AutoBhop, ADMFLAG_RCON, "Toggle Bhop On");
 	RegAdminCmd("sm_bhopon", AutoBhopOn, ADMFLAG_RCON, "Turn Bhop On");
 	RegAdminCmd("sm_bhopoff", AutoBhopOff, ADMFLAG_RCON, "Turn Bhop Off");
