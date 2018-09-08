@@ -12,6 +12,7 @@ ConVar autobunnyhopping;
 Handle abVelocity;
 Handle abAdvert;
 Handle abAdvertMode;
+Handle abMeterLocation;
 
 public Plugin myinfo =
 {
@@ -26,6 +27,7 @@ public void OnPluginStart()
 	abVelocity	=	CreateConVar("ab_velocity", "1", "Whethere to show velocity when bhop is enabled.");
 	abAdvert	=	CreateConVar("ab_advert", "1", "Enable or Disable Advert.");
 	abAdvertMode	=	CreateConVar("ab_advertmode", "3", "Advert Location 1 = Chat, 2 = HintText, 3 = Text");
+	abMeterLocation		=	CreateConVar("ssm_location", "1", "where should speed meter be shown. 0 = CenterHUD, 1 = New CSGO HUD");
 	
 	AutoExecConfig(true, "cruze_bhoptoggle");
 	
@@ -224,7 +226,14 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVel);
 			float fVelocity = SquareRoot(Pow(vVel[0], 2.0) + Pow(vVel[1], 2.0));
 			SetHudTextParamsEx(-1.0, 0.65, 0.1, {255, 255, 255, 255}, {0, 0, 0, 255}, 0, 0.0, 0.0, 0.0);
-			ShowHudText(client, 3, "Speed: %.2f u/s", fVelocity);
+			if(GetConVarBool(abMeterLocation))
+			{
+				ShowHudText(client, 3, "Speed: %.2f u/s", fVelocity);
+			}
+			else
+			{
+				PrintHintText(client, "<font color='#FF0000'> Speed</font>:<font color='#00ff00'> %.2f</font> <u/s", fVelocity);
+			}
 		}
 		if(IsClientObserver(client))
 		{
@@ -240,7 +249,42 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 			char ClientName[32];
 			GetClientName(spectarget, ClientName, 32);
-			ShowHudText(client, 3, "%s's Speed: %.2f u/s", ClientName, fVelocity);
+			if(GetConVarBool(abMeterLocation))
+			{
+				if(IsFakeClient(spectarget))
+				{
+					ShowHudText(client, 3, "BOT %s's Speed: %.2f u/s", ClientName, fVelocity);
+				}
+				else
+				{
+					ShowHudText(client, 3, "%s's Speed: %.2f u/s", ClientName, fVelocity);
+				}
+			}
+			else
+			{
+				if(IsFakeClient(spectarget))
+				{
+					if (GetClientTeam(spectarget) == 2)
+					{
+						PrintHintText(client, "<font color='#ede749'>BOT %s</font>'s <font color='#FF0000'>Speed</font>: <font color='#00ff00'> %.2f</font> u/s", ClientName, fVelocity);
+					}
+					else
+					{
+						PrintHintText(client, "<font color='#3169c4'>BOT %s</font>'s <font color='#FF0000'>Speed</font>: <font color='#00ff00'> %.2f</font> u/s", ClientName, fVelocity);
+					}
+				}
+				else
+				{
+					if (GetClientTeam(spectarget) == 2)
+					{
+						PrintHintText(client, "<font color='#ede749'>%s</font>'s <font color='#FF0000'>Speed</font>: <font color='#00ff00'> %.2f</font> u/s", ClientName, fVelocity);
+					}
+					else
+					{
+						PrintHintText(client, "<font color='#3169c4'>%s</font>'s <font color='#FF0000'>Speed</font>: <font color='#00ff00'> %.2f</font> u/s", ClientName, fVelocity);
+					}
+				}
+			}
 		}
 		return;
 	}
