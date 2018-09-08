@@ -220,12 +220,12 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 	if(GetConVarInt(autobunnyhopping) == 1  && IsValidClient(client) && GetConVarBool(abVelocity)) 
 	{	
+		float vVel[3];
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVel);
+		float fVelocity = SquareRoot(Pow(vVel[0], 2.0) + Pow(vVel[1], 2.0));
+		SetHudTextParamsEx(-1.0, 0.65, 0.1, {255, 255, 255, 255}, {0, 0, 0, 255}, 0, 0.0, 0.0, 0.0);
 		if(IsPlayerAlive(client))
 		{
-			float vVel[3];
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVel);
-			float fVelocity = SquareRoot(Pow(vVel[0], 2.0) + Pow(vVel[1], 2.0));
-			SetHudTextParamsEx(-1.0, 0.65, 0.1, {255, 255, 255, 255}, {0, 0, 0, 255}, 0, 0.0, 0.0, 0.0);
 			if(GetConVarBool(abMeterLocation))
 			{
 				ShowHudText(client, 3, "Speed: %.2f u/s", fVelocity);
@@ -237,11 +237,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 		}
 		if(IsClientObserver(client))
 		{
-			float vVel[3];
-			GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVel);
-			float fVelocity = SquareRoot(Pow(vVel[0], 2.0) + Pow(vVel[1], 2.0));
-			SetHudTextParamsEx(-1.0, 0.65, 0.1, {255, 255, 255, 255}, {0, 0, 0, 255}, 0, 0.0, 0.0, 0.0);
-
 			int spectarget = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
 			if (spectarget < 1 || spectarget > MaxClients || !IsClientInGame(spectarget))
